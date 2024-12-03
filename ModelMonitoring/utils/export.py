@@ -1,5 +1,6 @@
 import json
-import pyodbc
+import sqlite3
+
 
 class Export:
     def __init__(self, workspace: str):
@@ -80,7 +81,7 @@ class Export:
                 'correlation_type': 'VARCHAR',          # correlation type (pearson, spearman, kendall)
                 'tgt_prd': 'CHAR(3)',                   # target (tgt) or prediction (prd)
                 'column_name': 'VARCHAR',
-                'col_value': 'FLOAT'
+                'col_value': 'FLOAT'                    # correlation value
             },
             'regression_metrics': {                     # general information regarding regression model
                 'cur_ref': 'CHAR(3)',                   # reference data (ref) or current data (cur)
@@ -155,12 +156,15 @@ class Export:
 
         self.path_to_db = path
 
+        """
         conn_str = (
             r'DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};'
             rf'DBQ={self.path_to_db};'
         )
+        """
+        conn_str = self.path_to_db
 
-        self.conn = pyodbc.connect(conn_str)
+        self.conn = sqlite3.connect(conn_str)
         self.cursor = self.conn.cursor()
 
     def disconnect(self) -> None:
@@ -224,7 +228,7 @@ class Export:
             # create table if it does not already exist
             try:
                 self.setup_database(f'{column}_dist')
-            except pyodbc.ProgrammingError:
+            except sqlite3.OperationalError:
                 pass
 
             for i in range(len(x_cur)):
@@ -495,4 +499,12 @@ class Export:
 
         self.cursor.execute(query, values)
         self.conn.commit()
+
+with open('../../workspace/model1/target.json') as file:
+    data = json.load(file)
+
+temp = data['metrics']
+for i in temp:
+    print(i)
+    #print(temp[i])
 
