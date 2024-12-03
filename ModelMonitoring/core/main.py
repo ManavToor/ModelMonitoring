@@ -1,8 +1,8 @@
 from evidently.metric_preset import DataDriftPreset, DataQualityPreset, TargetDriftPreset, RegressionPreset, ClassificationPreset
 
-from get_data import run_query
-from run_report import Model
-from export import Export
+from ModelMonitoring.ModelMonitoring.utils.get_data import run_query
+from ModelMonitoring.ModelMonitoring.utils.run_report import Model
+from ModelMonitoring.ModelMonitoring.utils.export import Export
 
 
 if __name__ == '__main__':
