@@ -1,9 +1,9 @@
 from evidently.metric_preset import DataDriftPreset, DataQualityPreset, TargetDriftPreset, RegressionPreset, ClassificationPreset
+from evidently import ColumnMapping
 
 from ModelMonitoring.ModelMonitoring.utils.get_data import run_query
 from ModelMonitoring.ModelMonitoring.utils.run_report import Model
 from ModelMonitoring.ModelMonitoring.utils.export import Export
-
 
 if __name__ == '__main__':
     # Pseudocode:
@@ -18,8 +18,13 @@ if __name__ == '__main__':
 
     reference_data, current_data = run_query()
 
-    model = Model(WORKSPACE)
-    model.map_columns(target, prediction, numerical_features, categorical_features)
+    column_mapping = ColumnMapping()
+    column_mapping.target = target
+    column_mapping.prediction = prediction
+    column_mapping.numerical_features = numerical_features
+    column_mapping.categorical_features = categorical_features
+
+    model = Model(WORKSPACE, column_mapping)
 
     model.generate_report('drift', [DataDriftPreset()], reference_data, current_data)
     model.generate_report('quality', [DataQualityPreset()], reference_data, current_data)

@@ -1,10 +1,10 @@
 import pandas as pd
 
-from evidently import ColumnMapping
 from evidently.report import Report
+from evidently import ColumnMapping
 
 class Model:
-    def __init__(self, workspace: str):
+    def __init__(self, workspace: str, column_mapping: ColumnMapping):
         """
         methods to handle generation of evidently reports
 
@@ -26,30 +26,9 @@ class Model:
             model.generate_report('regression', [RegressionPreset()], reference, current)
 
         :param workspace: file path to model folder
+        :param column_mapping: column_mapping object in evidently
         """
         self.SAVE_PATH = workspace
-
-        self.column_mapping = None
-
-    def map_columns(self, target: str, prediction: str, numerical_features: list[str], categorical_features: list[str]):
-        """
-        Manually set up column mapping object to avoid errors in evidently attempting to automatically differentiate
-        values
-
-        :param target: name of column holding actual output values
-        :param prediction: name of column holding model predictions
-        :param numerical_features: name(s) of columns with quantitative parameters
-        :param categorical_features: name(s) of columns with qualitative parameters
-        :return: evidently ColumnMapping object ready for use in reports
-        """
-
-        column_mapping = ColumnMapping()
-
-        column_mapping.target = target
-        column_mapping.prediction = prediction
-        column_mapping.numerical_features = numerical_features
-        column_mapping.categorical_features = categorical_features
-
         self.column_mapping = column_mapping
 
     @staticmethod
